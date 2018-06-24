@@ -9,9 +9,9 @@ public:
 	node(int);
 };
 
-class list{
-	node* head;
+class list{	
 public:
+	node* head;
 	list();
 	void insert_element(int);
 	void delete_element(int);
@@ -27,6 +27,10 @@ public:
 	void delete_element(int);
 	void delete_all();
 	void print();
+	void josephus(int,int);
 };
+
+void merge_sort(list,list);
+
 
 #endif

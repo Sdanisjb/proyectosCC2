@@ -1,6 +1,7 @@
 #include "linked_list.h"
 #include <iostream>
 
+using namespace std;
 
 //Lista enlazada simple
 //constructor con valores
@@ -130,34 +131,34 @@ void clist::insert_element(int elemento){
 	node* prev = new node;
 	node* actual = new node;	
 	actual = head;
-	prev = NULL;
+	prev = head;
 	//Si no hay elementos en la lista inserta
 	//al comienzo
 	if(head==NULL){
 		head = temp;
 		temp->next = head;
 		temp = NULL;		
-	}
-	//insercion antes del head
+	}	
 	
 	//otras inserciones
 	else{
-		while(actual->next!=head){
+		while(prev->next!=head){
 			if(actual->value==elemento){
 				delete temp;
 				return;
 			}
+			//inserción en el medio
 			else if(prev->value<elemento && elemento<actual->value){
 				prev->next=temp;
 				temp->next=actual;
-				temp = NULL;
+				temp = NULL;				
 				return;
 			}
 			prev=actual;
 			actual=actual->next;
 		}
 		//insercion al final de la lista
-		actual->next=temp;
+		prev->next=temp;
 		temp->next=head;		
 		if(elemento<head->value){
 			head=temp;
@@ -174,6 +175,96 @@ void clist::print(){
 		std::cout<<temp->value<<"\t";
 		temp = temp->next;
 	}
-	std::cout<<temp->value<<"\t";
+	std::cout<<temp->value<<"\t";	
 	std::cout<<std::endl;
+}
+
+//borrado de elementos
+void clist::delete_element(int elemento){
+	//nodo temporal
+	node* actual = new node;
+	actual = head->next;
+	//variables auxiliares
+	node* prev = new node;
+	prev = head;
+	while(prev->next!=head){
+		if(actual->value==elemento){			
+			prev->next = actual->next;
+			delete actual;			
+			return;
+		}
+		prev = actual;
+		actual = actual->next;
+	}	
+	if(actual->value==elemento){
+		prev->next = actual->next;
+		if(actual == head){head = actual->next;}
+		delete actual;
+		return;
+	}
+	std::cout<<"No se encontro el elemento"<<std::endl;
+	
+}
+
+
+void clist::josephus(int num,int salto){	
+	for(int i=1;i<=num;i++){
+		insert_element(i);
+	}
+	print();
+	//Variables Auxiliares	
+	node* actual = new node;
+	node* prev = new node;
+	prev = head;
+	actual = head;
+	while(head->next->next!=head){		
+		for(int i=1;i<salto;i++){
+			prev=actual;
+			actual=actual->next;
+		}
+		if(actual==head){head=head->next;}
+		prev->next = actual->next;
+		actual = actual->next;	
+		print();
+	}
+	cout<<"Se salvan:"<<'\t';
+	print();
+	
+}
+void merge_sort(list par, list impar){
+	node* actual = new node;
+	node* prev = new node;
+	node* actual2 = new node;
+	
+	
+	actual2 = impar.head;	
+	while(actual2->next!=NULL){
+		//Inicializamos los valores al inicio
+		actual = par.head;
+		prev = par.head;
+		while(actual->next!=NULL){
+			//Inserción al comienzo
+			if(actual2->value < par.head){
+				impar.head = actual2->next;
+				actual2->next = actual;
+				par.head = actual2;
+			}
+			//Insercion en el medio
+			else if(prev->value < actual2->value && actual2->value < actual->value){
+				impar.head = actual2->next;
+				prev->next = actual2;
+				actual2->next = actual;
+			}
+			prev = actual;
+			actual = actual->next;
+		}
+		//Insercion al final de la lista
+		impar.head = actual2->next;
+		actual->next = actual2;
+		actual2->next = NULL;
+		
+		//Buscamos la posicion del siguiente elemento
+		actual2 = actual2->next;
+	}
+	par.print();
 }
